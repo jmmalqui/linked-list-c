@@ -1,3 +1,5 @@
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,11 +25,27 @@ ListNode* MakeNewListNode(int data)
     return node;
 }
 
+ListNode* DetectCycleLocation(ListNode* node);
+
 void PrintNode(ListNode* node)
 {
+    int       cycle_count    = 0;
+    ListNode* cycle_location = DetectCycleLocation(node);
+    if (cycle_location) {
+        printf("[INFO] List is cyclic, trimming down to the beginning of the next cycle.\n");
+    }
     ListNode* current = node;
     while (current) {
         printf("%d\n", current->data);
+
+        if (current == cycle_location) {
+            cycle_count++;
+        }
+        if (cycle_count == 2) {
+            printf("LinkedList entered to an endless cycle here, stopping.\n");
+            break;
+        }
+
         current = current->next;
     }
 }
@@ -61,26 +79,49 @@ void ClearLinkedList(ListNode* node)
 {
     ListNode* current = node;
     ListNode* prev    = NULL;
+
+    ListNode* cycle_location = DetectCycleLocation(node);
     while (current) {
         prev    = current;
         current = current->next;
-        free(prev);
+        if (prev == cycle_location)
+            prev->next = NULL;
+        else {
+            free(prev);
+        }
+    }
+}
+
+ListNode* DetectCycleLocation(ListNode* node)
+{
+    ListNode* one_step_pointer = node;
+    ListNode* two_step_pointer = node;
+    while (true) {
+        one_step_pointer = one_step_pointer->next;
+        if (!two_step_pointer->next)
+            return NULL;
+        two_step_pointer = two_step_pointer->next->next;
+        if (!one_step_pointer || !two_step_pointer)
+            return NULL;
+
+        if (one_step_pointer == two_step_pointer)
+            return one_step_pointer;
     }
 }
 
 int main(int argc, char* argv[])
 {
-    ListNode* head_node = MakeNewListNode(1);
-
-    head_node->next                         = MakeNewListNode(2);
-    head_node->next->next                   = MakeNewListNode(3);
-    head_node->next->next->next             = MakeNewListNode(4);
-    head_node->next->next->next->next       = MakeNewListNode(5);
-    head_node->next->next->next->next->next = NULL;
-
-    /* PrintNode(head_node); */
-    /* ListNode* last_node = ReverseLinkedList(head_node); */
-    /* PrintNode(last_node); */
-    ClearLinkedList(head_node);
+    ListNode* node1 = MakeNewListNode(1);
+    ListNode* node2 = MakeNewListNode(2);
+    ListNode* node3 = MakeNewListNode(3);
+    ListNode* node4 = MakeNewListNode(4);
+    ListNode* node5 = MakeNewListNode(5);
+    node5->next     = node1;
+    node4->next     = node5;
+    node3->next     = node4;
+    node2->next     = node3;
+    node1->next     = node2;
+    PrintNode(node1);
+    ClearLinkedList(node1);
     return EXIT_SUCCESS;
 }
