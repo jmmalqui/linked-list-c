@@ -14,7 +14,7 @@ ListNode* MakeNewListNode(int data)
 
     if (!node) {
         printf("[ERROR] Could not allocate memory for new node\n");
-        return NULL;
+        exit(1);
     }
 
     node->data = data;
@@ -59,10 +59,7 @@ ListNode* ReverseLinkedList(ListNode* node)
 int main(int argc, char* argv[])
 {
     ListNode* head_node = MakeNewListNode(1);
-    if (!head_node) {
-        printf("[ERROR] Could not allocate memory for new node\n");
-        return EXIT_FAILURE;
-    }
+
     head_node->next                         = MakeNewListNode(2);
     head_node->next->next                   = MakeNewListNode(3);
     head_node->next->next->next             = MakeNewListNode(4);
