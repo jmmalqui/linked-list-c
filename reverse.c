@@ -54,6 +54,20 @@ ListNode* ReverseLinkedList(ListNode* node)
         }
         current = current->next;
     }
+    return NULL;
+}
+
+void ClearLinkedList(ListNode* node)
+{
+    ListNode* current = node;
+    ListNode* next    = NULL;
+    ListNode* prev    = NULL;
+    while (current) {
+        next    = current->next;
+        prev    = current;
+        current = next;
+        free(prev);
+    }
 }
 
 int main(int argc, char* argv[])
@@ -67,8 +81,9 @@ int main(int argc, char* argv[])
     head_node->next->next->next->next->next = NULL;
 
     /* PrintNode(head_node); */
-    ListNode* last_node = ReverseLinkedList(head_node);
-    PrintNode(last_node);
-
+    /* ListNode* last_node = ReverseLinkedList(head_node); */
+    /* PrintNode(last_node); */
+    ClearLinkedList(head_node);
+    PrintNode(head_node);
     return EXIT_SUCCESS;
 }
