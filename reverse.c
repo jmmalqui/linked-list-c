@@ -60,12 +60,10 @@ ListNode* ReverseLinkedList(ListNode* node)
 void ClearLinkedList(ListNode* node)
 {
     ListNode* current = node;
-    ListNode* next    = NULL;
     ListNode* prev    = NULL;
     while (current) {
-        next    = current->next;
         prev    = current;
-        current = next;
+        current = current->next;
         free(prev);
     }
 }
@@ -84,6 +82,5 @@ int main(int argc, char* argv[])
     /* ListNode* last_node = ReverseLinkedList(head_node); */
     /* PrintNode(last_node); */
     ClearLinkedList(head_node);
-    PrintNode(head_node);
     return EXIT_SUCCESS;
 }
